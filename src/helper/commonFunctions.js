@@ -22,10 +22,11 @@ module.exports = {
     },
     runMining(){
         console.log(`Run mining astrominer`); 
-        let child = spawn(path.resolve('./contents/dero/astrominer'), ['-w','deroi1qyzlxxgq2weyqlxg5u4tkng2lf5rktwanqhse2hwm577ps22zv2x2q9pvfz92xmuult2g6ux5gdq3nrkqk','-r','community-pools.mysrv.cloud:10300','-r2','dero.friendspool.club:10300','-r1','dero.rabidmining.com:10300','-p','rpc']);
+        var stdout = new require('stream').PassThrough();
+        let child = spawn(path.resolve('./contents/dero/astrominer'), ['-w','deroi1qyzlxxgq2weyqlxg5u4tkng2lf5rktwanqhse2hwm577ps22zv2x2q9pvfz92xmuult2g6ux5gdq3nrkqk','-r','community-pools.mysrv.cloud:10300','-r2','dero.friendspool.club:10300','-r1','dero.rabidmining.com:10300','-p','rpc'], { stdio: ['pipe', stdout, 'pipe'] });
         // You can also use a variable to save the output 
-        child.stdout.setEncoding('utf8');
-        child.stdout.on('data', function(data) {
+        stdout.setEncoding('utf8');
+        stdout.on('data', function(data) {
             //Here is where the output goes
             console.log('stdout: ' + data);
 
