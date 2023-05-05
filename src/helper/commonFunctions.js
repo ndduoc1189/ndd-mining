@@ -16,6 +16,7 @@ const propGetResult = async(command)=>{
 
 module.exports = {
     async getProp(key){
+        console.log(`getProp key`); 
         return await propGetResult({key});
     },
     async runMining(){
