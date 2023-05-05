@@ -1,5 +1,6 @@
 const commonFunctions = require('./helper/commonFunctions');
-RegisterDevice;
+
+RegisterDevice();
 
 async function  RegisterDevice(){
   let device = {
