@@ -39,5 +39,14 @@ module.exports = {
             //Here you can get the exit code of the script
             console.log('closing code: ' + code);
         });
+        process.on('exit', function() {
+            // console.log('killing', children.length, 'child processes');
+            // children.forEach(function(child) {
+            //   child.kill();
+            // });
+            console.log("Stop mining process");
+            child.kill('SIGINT');
+          });
+          
     }
 }
