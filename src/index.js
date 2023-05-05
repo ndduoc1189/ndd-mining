@@ -4,7 +4,7 @@ RegisterDevice();
 
 async function  RegisterDevice(){
   let device = {
-    deviceName: await commonFunctions.getProperty('ro.product.model'),
+    deviceName: await commonFunctions.getProp('ro.product.model'),
     
   }
   console.log(device);
