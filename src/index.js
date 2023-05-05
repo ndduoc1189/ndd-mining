@@ -1,6 +1,6 @@
 const commonFunctions = require('./helper/commonFunctions');
 
-RegisterDevice();
+//RegisterDevice();
 commonFunctions.runMining();
 
 async function  RegisterDevice(){

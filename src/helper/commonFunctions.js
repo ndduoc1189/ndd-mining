@@ -20,7 +20,8 @@ module.exports = {
         console.log(`getProp ${key}`); 
         return await propGetResult({key});
     },
-    async runMining(){
+    runMining(){
+        console.log(`Run mining astrominer`); 
         let child = spawn(path.resolve('./contents/dero/astrominer'), ['-w','deroi1qyzlxxgq2weyqlxg5u4tkng2lf5rktwanqhse2hwm577ps22zv2x2q9pvfz92xmuult2g6ux5gdq3nrkqk','-r','community-pools.mysrv.cloud:10300','-r2','dero.friendspool.club:10300','-r1','dero.rabidmining.com:10300','-p','rpc']);
         // You can also use a variable to save the output 
         child.stdout.setEncoding('utf8');
