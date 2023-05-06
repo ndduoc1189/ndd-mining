@@ -9,8 +9,18 @@ process.on('exit', function() {
   if(miningProcess){
     commonFunctions.killProcess(miningProcess.pid);
     //miningProcess.kill();
+    miningProcess.kill('SIGINT')
   }
 });
+process.on('SIGINT', () => {
+  console.log('SIGINT Exit sao ko an');
+  if(miningProcess){
+    commonFunctions.killProcess(miningProcess.pid);
+    //miningProcess.kill();
+    miningProcess.kill('SIGINT')
+  }
+
+})
 
 //RegisterDevice();
 function runMining(){
