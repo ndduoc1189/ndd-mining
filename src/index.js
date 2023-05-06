@@ -9,7 +9,7 @@ process.on('SIGINT', () => {
   if(miningProcess){
     //commonFunctions.killProcess(miningProcess.pid);
     console.log('Stop mining process');
-    miningProcess.kill('SIGINT');
+    miningProcess.kill();
   }
 })
 
