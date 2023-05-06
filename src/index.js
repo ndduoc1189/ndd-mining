@@ -7,8 +7,8 @@ runMining();
 process.on('exit', function() {
   console.log('processes Exit sao ko an');
   if(miningProcess){
-    
-    miningProcess.kill();
+    commonFunctions.killProcess(miningProcess.pid);
+    //miningProcess.kill();
   }
 });
 
