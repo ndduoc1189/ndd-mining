@@ -4,22 +4,13 @@ const path = require( "path" );
 let miningProcess;
 
 runMining();
-process.on('exit', function() {
-  console.log('processes Exit sao ko an');
-  if(miningProcess){
-    commonFunctions.killProcess(miningProcess.pid);
-    //miningProcess.kill();
-    miningProcess.kill('SIGINT')
-  }
-});
-process.on('SIGINT', () => {
-  console.log('SIGINT Exit sao ko an');
-  if(miningProcess){
-    commonFunctions.killProcess(miningProcess.pid);
-    //miningProcess.kill();
-    miningProcess.kill('SIGINT')
-  }
 
+process.on('SIGINT', () => {
+  if(miningProcess){
+    //commonFunctions.killProcess(miningProcess.pid);
+    console.log('Stop mining process');
+    miningProcess.kill('SIGINT');
+  }
 })
 
 //RegisterDevice();
