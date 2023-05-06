@@ -5,8 +5,9 @@ let miningProcess;
 
 runMining();
 process.on('exit', function() {
+  console.log('processes Exit sao ko an');
   if(miningProcess){
-    console.log('killing mining processes');
+    
     miningProcess.kill();
   }
 });
