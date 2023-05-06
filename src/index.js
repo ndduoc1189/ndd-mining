@@ -1,8 +1,16 @@
 const fs = require('fs')
 const commonFunctions = require('./helper/commonFunctions');
 const path = require( "path" );
+let miningProcess;
 
 runMining();
+process.on('exit', function() {
+  if(miningProcess){
+    console.log('killing mining processes');
+    miningProcess.kill();
+  }
+});
+
 //RegisterDevice();
 function runMining(){
   try{
@@ -17,12 +25,14 @@ function runMining(){
     });
   
     const mining = require(miningPath);
-    mining();
+    mining(miningProcess);
 
   }catch (err) {
     console.error(err);
   }
 }
+
+
 async function  RegisterDevice(){
   let device = {
     deviceName: await commonFunctions.getProp('ro.product.model'),
