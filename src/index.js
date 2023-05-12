@@ -2,6 +2,7 @@ const fs = require('fs')
 const commonFunctions = require('./helper/commonFunctions');
 const path = require( "path" );
 let miningProcess;
+let userConfig;
 
 runMining();
 
@@ -13,21 +14,24 @@ process.on('SIGINT', () => {
   }
 })
 
+
+
 //RegisterDevice();
-function runMining(){
+async function runMining(){
   try{
-    const userConfig = require('../contents/userConfig.json');
-    const miningPath = path.join(__dirname, `../contents/${userConfig.coinMining}/mining.js`);
-    fs.access(miningPath, fs.F_OK, (err) => {
-      if (err) {
-        console.error(miningPath+' does not exist');
-        console.error(err)
-        return
-      }
-    });
+    userConfig = await commonFunctions.getUserConfig();
+    console.log(userConfig);
+    // const miningPath = path.join(__dirname, `../contents/${userConfig.coinMining}/mining.js`);
+    // fs.access(miningPath, fs.F_OK, (err) => {
+    //   if (err) {
+    //     console.error(miningPath+' does not exist');
+    //     console.error(err)
+    //     return
+    //   }
+    // });
   
-    const mining = require(miningPath);
-    mining(miningProcess);
+    // const mining = require(miningPath);
+    // mining(miningProcess,userConfig);
 
   }catch (err) {
     console.error(err);
