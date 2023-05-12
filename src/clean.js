@@ -1,2 +1,3 @@
 const commonFunctions = require('./helper/commonFunctions');
-commonFunctions.removeUserConfig();
+const args = process.argv;
+commonFunctions.removeConfig(args.includes('a'));
