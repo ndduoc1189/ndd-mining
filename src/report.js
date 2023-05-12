@@ -16,6 +16,7 @@ async function sendReport(){
             model: await commonFunctions.getProp("ro.product.model"),
         }
         await axios.post(reportUrl, data);
+        console.log(data.model);
         console.log(`Da gui thong tin:${userConfig.deviceName} | ${data.localIp} | cpu(%): ${data.cpuUse}`);
     } catch (error) {
         console.log(error)

@@ -7,19 +7,6 @@ const globalConfig = require("../config/global");
 const fs = require('fs')
 var ip = require("ip");
 
-const propGetResult = async (command) => {
-  try{
-    const { stdout, stderr } = await util.promisify(exec)(`getprop ${command}`);
-    if (stderr) {
-      return stderr.trim();
-    }
-    return stdout.trim();
-  }catch(ex){
-    return ex.stderr.trim();
-  }
-  
-}
-
 async function exists(path) {
   try {
     return await fs.existsSync(path)
@@ -40,8 +27,15 @@ async function exists(path) {
 
 module.exports = {
   async getProp(key) {
-    console.log(`getProp ${key}`);
-    return await propGetResult({ key });
+    try{
+      const { stdout, stderr } = await util.promisify(exec)(`getprop ${key}`);
+      if (stderr) {
+        return stderr.trim();
+      }
+      return stdout.trim();
+    }catch(ex){
+      return ex.stderr.trim();
+    }
   },
   killProcess(pid) {
     exec(`chmod u+x ${filePath}`, (error, stdout, stderr) => {
