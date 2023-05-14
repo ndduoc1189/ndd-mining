@@ -31,11 +31,11 @@ module.exports = {
     try {
       const { stdout, stderr } = await util.promisify(exec)(`getprop ${key}`);
       if (stderr) {
-        return stderr.trim();
+        return null;
       }
       return stdout.trim();
     } catch (ex) {
-      return ex.stderr.trim();
+      return null;
     }
   },
   killProcess(pid) {
@@ -70,12 +70,18 @@ module.exports = {
   },
   async getDeviceConfig() {
     let deviceConfig;
+    let deviceSerial = this.getProp("ro.serialno");
+    let isCreate =false;
     if (await exists(globalConfig.deviceConfig)) {
       let rawdata = fs.readFileSync(globalConfig.deviceConfig);
       deviceConfig = JSON.parse(rawdata);
-    } else {
+      if(deviceSerial && deviceSerial!= deviceConfig.deviceId){
+        isCreate = true;
+      }
+    } 
+    if(isCreate) {
       deviceConfig = {
-        deviceId: require("shortid").generate(),
+        deviceId: this.getProp("ro.serialno") || require("shortid").generate(),
         deviceName: await this.getProp("ro.product.model"),
         sshUser: await this.getUserSSH(),
         localIp: this.getDeviceIP(),
