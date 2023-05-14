@@ -70,7 +70,7 @@ module.exports = {
   },
   async getDeviceConfig() {
     let deviceConfig;
-    let deviceSerial = this.getProp("ro.serialno");
+    let deviceSerial = await this.getProp("ro.serialno");
     let isCreate =false;
     if (await exists(globalConfig.deviceConfig)) {
       let rawdata = fs.readFileSync(globalConfig.deviceConfig);
@@ -78,10 +78,13 @@ module.exports = {
       if(deviceSerial && deviceSerial!= deviceConfig.deviceId){
         isCreate = true;
       }
+    }else {
+      isCreate=true;
     } 
+    
     if(isCreate) {
       deviceConfig = {
-        deviceId: this.getProp("ro.serialno") || require("shortid").generate(),
+        deviceId: await this.getProp("ro.serialno") || require("shortid").generate(),
         deviceName: await this.getProp("ro.product.model"),
         sshUser: await this.getUserSSH(),
         localIp: this.getDeviceIP(),
