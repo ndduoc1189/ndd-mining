@@ -1,20 +1,48 @@
 const commonFunctions = require('./helper/commonFunctions');
 const axios = require('axios');
 const globalConfig = require("./config/global");
-
-let userConfig;
-let deviceConfig;
-let reportUrl;
-
+const WebSocket = require('ws');
+let userConfig, deviceConfig , ws;
 
 Run();
+// process.on('SIGINT', () => {
+//     if(ws){
+//         ws.close();
+//     }
+//   })
+
 async function Run(){
+    
     userConfig = await commonFunctions.getUserConfig();
     deviceConfig = await commonFunctions.getDeviceConfig();
-    reportUrl = `${globalConfig.apiURL}/mining/check/${userConfig.userId}/${deviceConfig.deviceId}`
-    await axios.post(reportUrl, deviceConfig);
-
+    connectWS();
+    await commonFunctions.delay(10000)
     await sendReport();
+}
+function connectWS() {
+    try{
+        // reportUrl = `${globalConfig.apiURL}/mining/check/${userConfig.userId}/${deviceConfig.deviceId}`
+        // await axios.post(reportUrl, deviceConfig);
+
+        // Kết nối đến máy chủ WebSocket
+        ws = new WebSocket(globalConfig.wsURL);
+        // Xử lý khi kết nối được thiết lập
+        ws.on('open', () => {
+        console.log('Worker connected to WebSocket server');
+        // Gửi yêu cầu đăng ký vào một nhóm cụ thể (ví dụ: 'task-group')
+        ws.send(JSON.stringify({ command: 'register', data:{userId:userConfig.userId,...deviceConfig}}));
+        });
+
+        // Xử lý khi nhận tin nhắn từ máy chủ
+        ws.on('message', (message) => {
+        console.log(`Received message from server: ${message}`);
+        });
+
+        // Xử lý khi kết nối đóng
+        ws.on('close', () => {
+            console.log('Worker disconnected from WebSocket server');
+        });
+    }catch(ex){console.log(ex);}
 }
 
 async function sendReport(){
@@ -22,18 +50,25 @@ async function sendReport(){
         
         
         const data = {
+            deviceId: deviceConfig.deviceId,
+            userId: userConfig.userId,
             sshUser: await commonFunctions.getUserSSH(),
             localIp : commonFunctions.getDeviceIP(),
             cpuUse: await commonFunctions.getCpuUse(),
             model: await commonFunctions.getProp("ro.product.model"),
         }
-        await axios.post(reportUrl, data);
-        console.log(data.model);
+
+        ws.send(JSON.stringify({ command: 'report',data:data}));
         console.log(`Da gui thong tin:${deviceConfig.deviceName} | ${data.localIp} | cpu(%): ${data.cpuUse}`);
+
     } catch (error) {
         console.log(error)
     } finally {
-        const timeOut  =getRandomInt(30000,90000);
+        if(ws && ws.readyState == WebSocket.CLOSED)
+        {
+            connectWS()
+        }
+        const timeOut  =getRandomInt(10000,60000);
         console.log(`Gui lai thong tin sau: ${timeOut/1000}s!`);
         await commonFunctions.delay(timeOut)
         await sendReport();
