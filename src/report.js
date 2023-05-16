@@ -48,14 +48,11 @@ function connectWS() {
 async function sendReport(){
     try {
         
-        
         const data = {
             deviceId: deviceConfig.deviceId,
             userId: userConfig.userId,
-            sshUser: await commonFunctions.getUserSSH(),
             localIp : commonFunctions.getDeviceIP(),
             cpuUse: await commonFunctions.getCpuUse(),
-            model: await commonFunctions.getProp("ro.product.model"),
         }
 
         ws.send(JSON.stringify({ command: 'report',data:data}));
