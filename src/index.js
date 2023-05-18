@@ -46,11 +46,12 @@ async function runAdbCommand(command) {
 
 async function turnOffScreen() {
   try {
-    const x = 500; // Thay đổi x theo tọa độ phù hợp
-    const y = 20; // Thay đổi y theo tọa độ phù hợp
-    await runAdbCommand(`shell input tap ${x} ${y}`);
-    await new Promise(resolve => setTimeout(resolve, 50));
-    await runAdbCommand(`shell input tap ${x} ${y}`);
+    // const x = 500; // Thay đổi x theo tọa độ phù hợp
+    // const y = 20; // Thay đổi y theo tọa độ phù hợp
+    // await runAdbCommand(`shell input tap ${x} ${y}`);
+    // await new Promise(resolve => setTimeout(resolve, 50));
+    // await runAdbCommand(`shell input tap ${x} ${y}`);
+    await runAdbCommand('shell input keyevent 26');
     console.log('Màn hình đã được tắt');
   } catch (error) {
     console.error('Lỗi khi tắt màn hình:', error);
