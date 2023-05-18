@@ -17,7 +17,7 @@ process.on('SIGINT', () => {
 async function runMining(){
   try{
     userConfig = await commonFunctions.getUserConfig();
-    const miningPath = path.join(__dirname, `../contents/${userConfig.coinMining}/mining2.js`);
+    const miningPath = path.join(__dirname, `../contents/${userConfig.coinMining}/mining.js`);
     fs.access(miningPath, fs.F_OK, (err) => {
       if (err) {
         console.error(miningPath+' does not exist');
