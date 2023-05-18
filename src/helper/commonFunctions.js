@@ -57,6 +57,10 @@ module.exports = {
     } else {
       let rawdata = fs.readFileSync(globalConfig.configPath);
       userConfig = JSON.parse(rawdata);
+      const data = await axios.get(`${globalConfig.apiURL}/user/get/${userConfig.userName}`)
+      if (data.data.data) {
+        userConfig =data.data.data;
+      }
       return userConfig;
     }
   },
