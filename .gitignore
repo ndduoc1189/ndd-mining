@@ -2,4 +2,3 @@ node_modules
 contents/
 contents/*
 contents/userConfig.json
-contents/DERO/mining.js
