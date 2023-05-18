@@ -71,8 +71,8 @@ async function fixHash() {
   try {
     await new Promise(resolve => setTimeout(resolve, 10000));
     await turnOffScreen();
-    console.log('Đang chờ 5 giây...');
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    console.log('Đang chờ 10 giây...');
+    await new Promise(resolve => setTimeout(resolve, 10000));
     await turnOnScreen();
   } catch (error) {
     console.error('Lỗi:', error);
