@@ -129,7 +129,7 @@ module.exports = {
   },
   async checkADB(){
     try {
-      const localIp = this.getDeviceIP();
+      const localIp = "127.0.0.1";
       const execAsync =util.promisify(exec);
       const { stdout } = await execAsync(`adb connect ${localIp}`);
       if (stdout.includes(`connected to ${localIp}`)) {

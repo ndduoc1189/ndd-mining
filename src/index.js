@@ -34,7 +34,7 @@ async function runMining(){
 }
 async function runAdbCommand(command) {
   try {
-    const { stdout } = await exec(`adb ${command}`);
+    const { stdout } = await exec(`adb -s 127.0.0.1:5555 ${command}`);
     return stdout.trim();
   } catch (error) {
     console.error(`Lỗi khi chạy lệnh adb ${command}:`, error);
