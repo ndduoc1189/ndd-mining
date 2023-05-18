@@ -17,14 +17,6 @@ async function exists(path) {
   }
 }
 
-function getIp() {
-  try {
-    return ip.address();
-  } catch (ex) {
-    return ex;
-  }
-}
-
 
 module.exports = {
   async getProp(key) {
@@ -90,6 +82,7 @@ module.exports = {
         localIp: this.getDeviceIP(),
         cpuUse: 0,
         cpuCores: this.getCpuCores(),
+        adbWifi: this.checkADB(),
         model: await this.getProp("ro.product.model"),
       }
       await fs.promises.writeFile(globalConfig.deviceConfig, JSON.stringify(deviceConfig));
@@ -114,7 +107,11 @@ module.exports = {
 
   },
   getDeviceIP() {
-    return getIp();
+    try {
+      return ip.address();
+    } catch (ex) {
+      return ex;
+    }
   },
   async getUserSSH() {
     const { stdout, error } = await util.promisify(exec)("whoami");
@@ -129,6 +126,23 @@ module.exports = {
   },
   getCpuCores() {
     return osu.cpu.count()
+  },
+  async checkADB(){
+    try {
+      const localIp = this.getDeviceIP();
+      const execAsync =util.promisify(exec);
+      const { stdout } = await execAsync(`adb connect ${localIp}`);
+      if (stdout.includes(`connected to ${localIp}`)) {
+        const connectedDevices = await execAsync('adb devices');
+        if (connectedDevices.stdout.includes(localIp)) {
+          return true;
+        }
+      }
+      return false;
+    } catch (error) {
+      console.log('Lỗi khi chạy lệnh adb:', error);
+      return false;
+    }
   },
   async delay(delayInms) {
     return new Promise(resolve => setTimeout(resolve, delayInms));

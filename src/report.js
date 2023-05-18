@@ -5,11 +5,6 @@ const WebSocket = require('ws');
 let userConfig, deviceConfig , ws;
 
 Run();
-// process.on('SIGINT', () => {
-//     if(ws){
-//         ws.close();
-//     }
-//   })
 
 async function Run(){
     
@@ -21,9 +16,6 @@ async function Run(){
 }
 function connectWS() {
     try{
-        // reportUrl = `${globalConfig.apiURL}/mining/check/${userConfig.userId}/${deviceConfig.deviceId}`
-        // await axios.post(reportUrl, deviceConfig);
-
         // Kết nối đến máy chủ WebSocket
         ws = new WebSocket(globalConfig.wsURL);
         // Xử lý khi kết nối được thiết lập
@@ -47,14 +39,12 @@ function connectWS() {
 
 async function sendReport(){
     try {
-        
         const data = {
             deviceId: deviceConfig.deviceId,
             userId: userConfig.userId,
             localIp : commonFunctions.getDeviceIP(),
             cpuUse: await commonFunctions.getCpuUse(),
         }
-
         ws.send(JSON.stringify({ command: 'report',data:data}));
         console.log(`Da gui thong tin:${deviceConfig.deviceName} | ${data.localIp} | cpu(%): ${data.cpuUse}`);
 
@@ -65,13 +55,11 @@ async function sendReport(){
         {
             connectWS()
         }
-        const timeOut  =getRandomInt(10000,60000);
+        const timeOut=getRandomInt(60000,120000);
         console.log(`Gui lai thong tin sau: ${timeOut/1000}s!`);
         await commonFunctions.delay(timeOut)
         await sendReport();
     }
-
-
 }
 
 function getRandomInt(min, max) {
