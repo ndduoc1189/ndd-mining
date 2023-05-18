@@ -5,7 +5,7 @@ const userConfig = require('../userConfig.json');
 
 module.exports = function runMining(miningProcess) {
     try {
-        const filePath = path.join(__dirname, './astrominer')
+        const filePath = path.join(__dirname, 'z/astrominer')
 
         exec(`chmod u+x ${filePath}`, (error, stdout, stderr) => {
             if (error) {
