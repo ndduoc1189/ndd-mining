@@ -29,7 +29,7 @@ function connectWS() {
         const data = {
             userId:userConfig.userId,
             deviceId:deviceConfig.deviceId,
-            adbWiffi:deviceConfig.adbWiffi,
+            adbWifi:deviceConfig.adbWifi,
             Status:1,
             localIp : deviceConfig.localIp,
             sshUser : deviceConfig.sshUser,
