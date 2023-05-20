@@ -27,7 +27,13 @@ function connectWS() {
         // Gửi yêu cầu đăng ký vào một nhóm cụ thể (ví dụ: 'task-group')
 
         const data = {
-            userId:userConfig.userId,...deviceConfig
+            userId:userConfig.userId,
+            deviceId:data.deviceId,
+            adbWiffi:data.adbWiffi,
+            Status:1,
+            localIp : data.localIp,
+            sshUser : data.sshUser,
+
         }
         console.log(data);
         ws.send(JSON.stringify({ command: 'register', data}));
