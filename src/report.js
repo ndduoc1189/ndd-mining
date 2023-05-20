@@ -1,7 +1,7 @@
 const commonFunctions = require('./helper/commonFunctions');
 const axios = require('axios');
 const globalConfig = require("./config/global");
-const WebSocket = require('ws');
+const WebSocket = require('reconnecting-websocket');
 let userConfig, deviceConfig , ws;
 
 Run();
@@ -51,10 +51,6 @@ async function sendReport(){
     } catch (error) {
         console.log(error)
     } finally {
-        if(ws && ws.readyState == WebSocket.CLOSED)
-        {
-            connectWS()
-        }
         const timeOut=getRandomInt(6000,12000);
         console.log(`Gui lai thong tin sau: ${timeOut/1000}s!`);
         await commonFunctions.delay(timeOut)

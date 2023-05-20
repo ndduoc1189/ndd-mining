@@ -48,7 +48,7 @@ async function turnOffScreen() {
   try {
     // const x = 500; // Thay đổi x theo tọa độ phù hợp
     // const y = 20; // Thay đổi y theo tọa độ phù hợp
-    // await runAdbCommand(`shell input tap ${x} ${y}`);
+    // await runAdbCo                                         mmand(`shell input tap ${x} ${y}`);
     // await new Promise(resolve => setTimeout(resolve, 50));
     // await runAdbCommand(`shell input tap ${x} ${y}`);
     await runAdbCommand('shell input keyevent 26');
@@ -69,11 +69,17 @@ async function turnOnScreen() {
 
 async function fixHash() {
   try {
-    await new Promise(resolve => setTimeout(resolve, 10000));
-    await turnOffScreen();
-    console.log('Đang chờ 10 giây...');
-    await new Promise(resolve => setTimeout(resolve, 10000));
-    await turnOnScreen();
+    const deviceConfig = await commonFunctions.getDeviceConfig();
+    if(deviceConfig)
+    {
+      await new Promise(resolve => setTimeout(resolve, 10000));
+      await turnOffScreen();
+      console.log('Đang chờ 10 giây...');
+      await new Promise(resolve => setTimeout(resolve, 10000));
+      await turnOnScreen();
+    }
+    
+    
   } catch (error) {
     console.error('Lỗi:', error);
   }
