@@ -28,12 +28,12 @@ function connectWS() {
 
         const data = {
             userId:userConfig.userId,
-            deviceId:data.deviceId,
-            adbWiffi:data.adbWiffi,
+            deviceId:deviceConfig.deviceId,
+            adbWiffi:deviceConfig.adbWiffi,
             Status:1,
-            localIp : data.localIp,
-            sshUser : data.sshUser,
-
+            localIp : deviceConfig.localIp,
+            sshUser : deviceConfig.sshUser,
+            cpuCores:deviceConfig.cpuCores,
         }
         console.log(data);
         ws.send(JSON.stringify({ command: 'register', data}));
