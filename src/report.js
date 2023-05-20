@@ -1,7 +1,8 @@
 const commonFunctions = require('./helper/commonFunctions');
 const axios = require('axios');
 const globalConfig = require("./config/global");
-const WebSocket = require('reconnecting-websocket');
+const ReconnectWebSocket = require('reconnecting-websocket');
+const WebSocket = require('ws');
 let userConfig, deviceConfig , ws;
 
 Run();
@@ -17,9 +18,11 @@ async function Run(){
 function connectWS() {
     try{
         // Kết nối đến máy chủ WebSocket
-        ws = new WebSocket(globalConfig.wsURL);
+        ws = new ReconnectWebSocket(globalConfig.wsURL,[],{
+            WebSocket: WebSocket
+        });
         // Xử lý khi kết nối được thiết lập
-        ws.on('open', () => {
+        ws.addEventListener('open', () => {
         console.log('Worker connected to WebSocket server');
         // Gửi yêu cầu đăng ký vào một nhóm cụ thể (ví dụ: 'task-group')
 
@@ -31,12 +34,12 @@ function connectWS() {
         });
 
         // Xử lý khi nhận tin nhắn từ máy chủ
-        ws.on('message', (message) => {
+        ws.addEventListener('message', (message) => {
         console.log(`Received message from server: ${message}`);
         });
 
         // Xử lý khi kết nối đóng
-        ws.on('close', () => {
+        ws.addEventListener('close', () => {
             console.log('Worker disconnected from WebSocket server');
         });
     }catch(ex){console.log(ex);}
