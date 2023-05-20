@@ -22,7 +22,12 @@ function connectWS() {
         ws.on('open', () => {
         console.log('Worker connected to WebSocket server');
         // Gửi yêu cầu đăng ký vào một nhóm cụ thể (ví dụ: 'task-group')
-        ws.send(JSON.stringify({ command: 'register', data:{userId:userConfig.userId,...deviceConfig}}));
+
+        const data = {
+            userId:userConfig.userId,...deviceConfig
+        }
+        console.log(data);
+        ws.send(JSON.stringify({ command: 'register', data}));
         });
 
         // Xử lý khi nhận tin nhắn từ máy chủ
