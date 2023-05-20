@@ -1,4 +1,4 @@
 node_modules
-contents/
-contents/*
 contents/userConfig.json
+contents/deviceconfig.json
+contents/log-mining.txt

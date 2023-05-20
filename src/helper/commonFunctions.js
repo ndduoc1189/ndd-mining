@@ -71,7 +71,7 @@ module.exports = {
     if (await exists(globalConfig.deviceConfig)) {
       let rawdata = fs.readFileSync(globalConfig.deviceConfig);
       deviceConfig = JSON.parse(rawdata);
-      deviceConfig.adbWifi= this.checkADB();
+      deviceConfig.adbWifi= await this.checkADB();
       if(deviceSerial && deviceSerial!= deviceConfig.deviceId){
         isCreate = true;
       }
@@ -87,7 +87,7 @@ module.exports = {
         localIp: this.getDeviceIP(),
         cpuUse: 0,
         cpuCores: this.getCpuCores(),
-        adbWifi: this.checkADB(),
+        adbWifi: await this.checkADB(),
         model: await this.getProp("ro.product.model"),
       }
       await fs.promises.writeFile(globalConfig.deviceConfig, JSON.stringify(deviceConfig));

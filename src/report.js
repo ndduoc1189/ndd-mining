@@ -46,7 +46,7 @@ async function sendReport(){
             cpuUse: await commonFunctions.getCpuUse(),
         }
         ws.send(JSON.stringify({ command: 'report',data:data}));
-        console.log(`Da gui thong tin:${deviceConfig.deviceName} | ${data.localIp} | cpu(%): ${data.cpuUse}`);
+        console.log(`Da gui thong tin: ${data.localIp} | cpu(%): ${data.cpuUse}`);
 
     } catch (error) {
         console.log(error)
@@ -55,7 +55,7 @@ async function sendReport(){
         {
             connectWS()
         }
-        const timeOut=getRandomInt(60000,120000);
+        const timeOut=getRandomInt(6000,12000);
         console.log(`Gui lai thong tin sau: ${timeOut/1000}s!`);
         await commonFunctions.delay(timeOut)
         await sendReport();
