@@ -7,17 +7,25 @@ async function getCPUInfo() {
     console.log('Number of CPU Cores:', cpuInfo.cores);
     
     // Lấy thông tin tải CPU
-    const currentLoad = await si.currentLoad();
-    console.log('CPU Usage:', currentLoad.currentload.toFixed(2), '%');
+    // const currentLoad = await si.currentLoad();
+    // console.log(currentLoad.currentload)
+    // if (typeof currentLoad.currentload !== 'undefined') {
+    //   console.log('CPU Usage:', currentLoad.currentload.toFixed(2), '%');
+    // }
     
     // Lấy thông tin nhiệt độ CPU
     const sensors = await si.cpuTemperature();
-    const temperature = sensors.main;
-    console.log('CPU Temperature:', temperature.toFixed(2), '°C');
+    console.log(sensors)
+    if (typeof sensors.main !== 'undefined') {
+      const temperature = sensors.main;
+      console.log('CPU Temperature:', temperature.toFixed(2), '°C');
+    }
     
     // Lấy thông tin điện áp tiêu thụ CPU
     const voltage = await si.cpuCurrentspeed();
-    console.log('CPU Voltage:', voltage.voltcore.toFixed(2), 'V');
+    if (typeof voltage.voltcore !== 'undefined') {
+      console.log('CPU Voltage:', voltage.voltcore.toFixed(2), 'V');
+    }
   } catch (error) {
     console.error('Error:', error);
   }
