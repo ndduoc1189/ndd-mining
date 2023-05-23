@@ -7,7 +7,12 @@ async function getCPUInfo() {
     console.log('system:', system);
     const cpuInfo = await si.cpu();
     console.log('Number of CPU Cores:', cpuInfo);
-
+    const chassis = await si.chassis();
+    console.log('chassis:', chassis);
+    const baseboard = await si.baseboard();
+    console.log('baseboard:', baseboard);
+    const bios = await si.bios();
+    console.log('baseboard:', bios);
     //Lấy thông tin tải CPU
     const currentLoad = await si.currentLoad();
     console.log(currentLoad.currentload)
