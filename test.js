@@ -3,15 +3,17 @@ const si = require('systeminformation');
 async function getCPUInfo() {
   try {
     // Lấy thông tin CPU
+    const system = await si.cpu();
+    console.log('system:', system);
     const cpuInfo = await si.cpu();
-    console.log('Number of CPU Cores:', cpuInfo.cores);
-    
-    // Lấy thông tin tải CPU
-    // const currentLoad = await si.currentLoad();
-    // console.log(currentLoad.currentload)
-    // if (typeof currentLoad.currentload !== 'undefined') {
-    //   console.log('CPU Usage:', currentLoad.currentload.toFixed(2), '%');
-    // }
+    console.log('Number of CPU Cores:', cpuInfo);
+
+    //Lấy thông tin tải CPU
+    const currentLoad = await si.currentLoad();
+    console.log(currentLoad.currentload)
+    if (typeof currentLoad.currentload !== 'undefined') {
+      console.log('CPU Usage:', currentLoad.currentload.toFixed(2), '%');
+    }
     
     // Lấy thông tin nhiệt độ CPU
     const sensors = await si.cpuTemperature();
@@ -22,7 +24,7 @@ async function getCPUInfo() {
     }
     
     // Lấy thông tin điện áp tiêu thụ CPU
-    const voltage = await si.cpuCurrentspeed();
+    const voltage = await si.cpuCurrentSpeed();
     if (typeof voltage.voltcore !== 'undefined') {
       console.log('CPU Voltage:', voltage.voltcore.toFixed(2), 'V');
     }
