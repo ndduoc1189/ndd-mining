@@ -1,13 +1,17 @@
-const util = require('node:util');
+const { promisify } = require('util');
 const path = require("path");
-const execFileAsync = util.promisify(require('node:child_process').execFile);
+const execFileAsync = promisify(require('node:child_process').execFile);
 const exec = require('child_process').exec;
 const axios = require('axios');
 const globalConfig = require("../config/global");
-const fs = require('fs')
-var ip = require("ip");
-const osu = require('node-os-utils')
 
+var ip = require("ip");
+const osu = require('node-os-utils');
+
+const fs = require('fs');
+const exists = promisify(fs.exists);
+const readFile = promisify(fs.readFile);
+const writeFile = promisify(fs.writeFile);
 async function exists(path) {
   try {
     return await fs.existsSync(path)
@@ -59,29 +63,29 @@ module.exports = {
       userConfig = JSON.parse(rawdata);
       const data = await axios.get(`${globalConfig.apiURL}/user/get/${userConfig.userName}`)
       if (data.data.data) {
-        userConfig =data.data.data;
+        userConfig = data.data.data;
       }
       return userConfig;
     }
   },
   async getDeviceConfig() {
     let deviceConfig;
+    let isCreate = false;
     let deviceSerial = await this.getProp("ro.serialno");
-    let isCreate =false;
-    if (await exists(globalConfig.deviceConfig)) {
-      let rawdata = fs.readFileSync(globalConfig.deviceConfig);
-      deviceConfig = JSON.parse(rawdata);
-      deviceConfig.adbWifi= await this.checkADB();
-      if(deviceSerial && deviceSerial!= deviceConfig.deviceId){
+
+    if (deviceSerial && await exists(globalConfig.deviceConfig)) {
+      deviceConfig = JSON.parse(await readFile(globalConfig.deviceConfig));
+      deviceConfig.adbWifi = await this.checkADB();
+      if (deviceSerial !== deviceConfig.deviceId) {
         isCreate = true;
       }
-    }else {
-      isCreate=true;
-    } 
-    
-    if(isCreate) {
+    } else {
+      isCreate = true;
+    }
+
+    if (isCreate) {
       deviceConfig = {
-        deviceId: await this.getProp("ro.serialno") || require("shortid").generate(),
+        deviceId: deviceSerial || require("shortid").generate(),
         deviceName: await this.getProp("ro.product.model"),
         sshUser: await this.getUserSSH(),
         localIp: this.getDeviceIP(),
@@ -89,11 +93,13 @@ module.exports = {
         cpuCores: this.getCpuCores(),
         adbWifi: await this.checkADB(),
         model: await this.getProp("ro.product.model"),
-      }
-      await fs.promises.writeFile(globalConfig.deviceConfig, JSON.stringify(deviceConfig));
+      };
+      await writeFile(globalConfig.deviceConfig, JSON.stringify(deviceConfig));
     }
+
     return deviceConfig;
-  },
+  }
+  ,
   async removeConfig(isRemoveUser) {
     try {
       if (isRemoveUser && await exists(globalConfig.configPath)) {
@@ -132,10 +138,10 @@ module.exports = {
   getCpuCores() {
     return osu.cpu.count()
   },
-  async checkADB(){
+  async checkADB() {
     try {
       const localIp = "127.0.0.1";
-      const execAsync =util.promisify(exec);
+      const execAsync = util.promisify(exec);
       const { stdout } = await execAsync(`adb connect ${localIp}`);
       if (stdout.includes(`connected to ${localIp}`)) {
         const connectedDevices = await execAsync('adb devices');
@@ -148,6 +154,18 @@ module.exports = {
       console.log('Lỗi khi chạy lệnh adb:', error);
       return false;
     }
+  },
+  // Kiểm tra xem thiết bị có quyền root hay không
+  checkRootPermission() {
+    return new Promise((resolve) => {
+      exec('su -c "id"', (error, stdout) => {
+        if (stdout.toLowerCase().includes('uid=0')) {
+          resolve(true); // Thiết bị có quyền root
+        } else {
+          resolve(false); // Thiết bị không có quyền root
+        }
+      });
+    });
   },
   async delay(delayInms) {
     return new Promise(resolve => setTimeout(resolve, delayInms));

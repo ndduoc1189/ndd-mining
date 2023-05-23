@@ -8,7 +8,6 @@ let userConfig, deviceConfig , ws;
 Run();
 
 async function Run(){
-    
     userConfig = await commonFunctions.getUserConfig();
     deviceConfig = await commonFunctions.getDeviceConfig();
     connectWS();
@@ -25,7 +24,6 @@ function connectWS() {
         ws.addEventListener('open', () => {
         console.log('Worker connected to WebSocket server');
         // Gửi yêu cầu đăng ký vào một nhóm cụ thể (ví dụ: 'task-group')
-
         const data = {
             userId:userConfig.userId,
             deviceId:deviceConfig.deviceId,
@@ -41,7 +39,10 @@ function connectWS() {
 
         // Xử lý khi nhận tin nhắn từ máy chủ
         ws.addEventListener('message', (message) => {
-        console.log(`Received message from server: ${message}`);
+
+
+            console.log(`Received message from server: ${message}`);
+
         });
 
         // Xử lý khi kết nối đóng
@@ -51,8 +52,12 @@ function connectWS() {
     }catch(ex){console.log(ex);}
 }
 
+let isSendReport = true;
 async function sendReport(){
     try {
+        if(!isSendReport){
+            return;
+        }
         const data = {
             deviceId: deviceConfig.deviceId,
             userId: userConfig.userId,
@@ -78,5 +83,10 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
   }
 
-
-
+// Xử lý sự kiện nhấn Ctrl+C
+process.on('SIGINT', () => {
+    // Đặt biến cờ thành false khi nhấn Ctrl+C
+    isSendReport = false;
+    console.log('Stopping the program...');
+    process.exit();
+  });
