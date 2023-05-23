@@ -3,7 +3,7 @@ const si = require('systeminformation');
 async function getCPUInfo() {
   try {
     // Lấy thông tin CPU
-    const system = await si.cpu();
+    const system = await si.system();
     console.log('system:', system);
     const cpuInfo = await si.cpu();
     console.log('Number of CPU Cores:', cpuInfo);
@@ -25,6 +25,7 @@ async function getCPUInfo() {
     
     // Lấy thông tin điện áp tiêu thụ CPU
     const voltage = await si.cpuCurrentSpeed();
+    console.log(voltage)
     if (typeof voltage.voltcore !== 'undefined') {
       console.log('CPU Voltage:', voltage.voltcore.toFixed(2), 'V');
     }
