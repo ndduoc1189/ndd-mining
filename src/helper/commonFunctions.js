@@ -12,14 +12,6 @@ const fs = require('fs');
 const exists = promisify(fs.exists);
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
-async function exists(path) {
-  try {
-    return await fs.existsSync(path)
-  } catch (ex) {
-    console.error(ex);
-    return false
-  }
-}
 
 
 module.exports = {
@@ -76,6 +68,7 @@ module.exports = {
     if (deviceSerial && await exists(globalConfig.deviceConfig)) {
       deviceConfig = JSON.parse(await readFile(globalConfig.deviceConfig));
       deviceConfig.adbWifi = await this.checkADB();
+      deviceConfig.root = await this.checkRootPermissions();
       if (deviceSerial !== deviceConfig.deviceId) {
         isCreate = true;
       }
