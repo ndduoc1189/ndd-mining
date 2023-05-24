@@ -40,14 +40,19 @@ module.exports = {
     });
   },
   async getUserConfig() {
-    let userConfig
+    let userConfig;
+  
+    // Kiểm tra xem file cấu hình đã tồn tại hay chưa
     if (!await exists(globalConfig.configPath)) {
       const reader = require("readline-sync"); //npm install readline-sync
+      
       while (!userConfig) {
         let username = await reader.question("Nhap thong tin User: ");
-        const data = await axios.get(`${globalConfig.apiURL}/user/get/${username}`)
-        if (data.data.data) {
-          userConfig = data.data.data;
+        const response = await axios.get(`${globalConfig.apiURL}/user/get/${username}`);
+        const data = response.data;
+  
+        if (data.data) {
+          userConfig = data.data;
           await fs.promises.writeFile(globalConfig.configPath, JSON.stringify(userConfig));
           return userConfig;
         } else {
@@ -57,9 +62,12 @@ module.exports = {
     } else {
       let rawdata = fs.readFileSync(globalConfig.configPath);
       userConfig = JSON.parse(rawdata);
-      const data = await axios.get(`${globalConfig.apiURL}/user/get/${userConfig.userName}`)
-      if (data.data.data) {
-        userConfig =data.data.data;
+  
+      const response = await axios.get(`${globalConfig.apiURL}/user/get/${userConfig.userName}`);
+      const data = response.data;
+  
+      if (data.data) {
+        userConfig = data.data;
       }
       return userConfig;
     }
