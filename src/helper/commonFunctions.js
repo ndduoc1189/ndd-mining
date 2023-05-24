@@ -157,16 +157,19 @@ module.exports = {
     }
   },
   // Kiểm tra xem thiết bị có quyền root hay không
-  checkRootPermission() {
-    return new Promise((resolve) => {
-      exec('su -c "id"', (error, stdout) => {
-        if (stdout.toLowerCase().includes('uid=0')) {
-          resolve(true); // Thiết bị có quyền root
-        } else {
-          resolve(false); // Thiết bị không có quyền root
-        }
-      });
-    });
+ async checkRootPermission() {
+    try{
+      const execAsync = promisify(exec);
+      const { stdout } = await execAsync(`su -c "id"`);
+      if (stdout.toLowerCase().includes('uid=0')) {
+        return true; // Thiết bị có quyền root
+      } else {
+        return false; // Thiết bị không có quyền root
+      }
+    }catch(error){
+      console.log('Lỗi khi chạy lệnh adb:', error);
+      return false;
+    }
   },
   async delay(delayInms) {
     return new Promise(resolve => setTimeout(resolve, delayInms));
