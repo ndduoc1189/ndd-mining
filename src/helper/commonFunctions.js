@@ -17,7 +17,7 @@ const writeFile = promisify(fs.writeFile);
 module.exports = {
   async getProp(key) {
     try {
-      const { stdout, stderr } = await util.promisify(exec)(`getprop ${key}`);
+      const { stdout, stderr } = await promisify(exec)(`getprop ${key}`);
       if (stderr) {
         return null;
       }
@@ -60,7 +60,7 @@ module.exports = {
       userConfig = JSON.parse(rawdata);
       const response = await axios.get(`${globalConfig.apiURL}/user/get/${userConfig.userName}`);
       const data = response.data;
-      
+
       if (data.data) {
         userConfig = data.data;
 
@@ -126,7 +126,7 @@ module.exports = {
     }
   },
   async getUserSSH() {
-    const { stdout, error } = await util.promisify(exec)("whoami");
+    const { stdout, error } = await promisify(exec)("whoami");
     if (error) {
       return error;
     }
@@ -142,7 +142,7 @@ module.exports = {
   async checkADB() {
     try {
       const localIp = "127.0.0.1";
-      const execAsync = util.promisify(exec);
+      const execAsync = promisify(exec);
       const { stdout } = await execAsync(`adb connect ${localIp}`);
       if (stdout.includes(`connected to ${localIp}`)) {
         const connectedDevices = await execAsync('adb devices');
