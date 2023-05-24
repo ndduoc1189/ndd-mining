@@ -76,7 +76,7 @@ module.exports = {
     if (deviceSerial && await exists(globalConfig.deviceConfig)) {
       deviceConfig = JSON.parse(await readFile(globalConfig.deviceConfig));
       deviceConfig.adbWifi = await this.checkADB();
-      deviceConfig.root = await this.checkRootPermissions();
+      deviceConfig.root = await this.checkRootPermission();
       if (deviceSerial !== deviceConfig.deviceId) {
         isCreate = true;
       }
