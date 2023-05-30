@@ -87,7 +87,7 @@ async function sendReport() {
             localIp: commonFunctions.getDeviceIP(),
             cpuUse: await commonFunctions.getCpuUse(),
         }
-        ws.send(JSON.stringify({ command: 'CLIENT_TASK_RESULT', data: data }));
+        ws.send(JSON.stringify({ command: 'CLIENT_REPORT', data: data }));
         console.log(`Da gui thong tin: ${data.localIp} | cpu(%): ${data.cpuUse}`);
 
     } catch (error) {
