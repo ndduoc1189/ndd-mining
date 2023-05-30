@@ -7,11 +7,15 @@ let userConfig, deviceConfig , ws;
 
 Run();
 
-async function Run(){
+async function Run() {
     userConfig = await commonFunctions.getUserConfig();
     deviceConfig = await commonFunctions.getDeviceConfig();
     connectWS();
-    await commonFunctions.delay(10000)
+    await commonFunctions.delay(10000);
+    while (ws && ws.readyState === WebSocket.CLOSED) {
+        connectWS();
+        await commonFunctions.delay(10000);
+    }
     await sendReport();
 }
 function connectWS() {
@@ -32,6 +36,7 @@ function connectWS() {
             localIp : deviceConfig.localIp,
             sshUser : deviceConfig.sshUser,
             cpuCores:deviceConfig.cpuCores,
+            root:deviceConfig.root,
         }
         console.log(data);
         ws.send(JSON.stringify({ command: 'register', data}));
@@ -70,7 +75,7 @@ async function sendReport(){
     } catch (error) {
         console.log(error)
     } finally {
-        const timeOut=getRandomInt(6000,12000);
+        const timeOut=getRandomInt(60000,120000);
         console.log(`Gui lai thong tin sau: ${timeOut/1000}s!`);
         await commonFunctions.delay(timeOut)
         await sendReport();
