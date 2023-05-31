@@ -1,7 +1,7 @@
 const commonFunctions = require('./helper/commonFunctions');
 const axios = require('axios');
 const globalConfig = require("./config/global");
-const ReconnectWebSocket = require('reconnecting-websocket');
+const ReconnectWebSocket = require('ws');
 const WebSocket = require('ws');
 let userConfig, deviceConfig, ws;
 
