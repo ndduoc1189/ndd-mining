@@ -73,18 +73,14 @@ module.exports = {
     let isCreate = false;
     let deviceSerial = await this.getProp("ro.serialno");
 
-    if (deviceSerial && await exists(globalConfig.deviceConfig)) {
+    if (await exists(globalConfig.deviceConfig)) {
       deviceConfig = JSON.parse(await readFile(globalConfig.deviceConfig));
       deviceConfig.adbWifi = await this.checkADB();
       deviceConfig.root = await this.checkRootPermission();
-      if (deviceSerial !== deviceConfig.deviceId) {
-        isCreate = true;
+      if (deviceSerial && deviceSerial != deviceConfig.deviceId) {
+        deviceConfig.deviceId = deviceSerial;
       }
     } else {
-      isCreate = true;
-    }
-
-    if (isCreate) {
       deviceConfig = {
         deviceId: deviceSerial || require("shortid").generate(),
         deviceName: await this.getProp("ro.product.model"),
@@ -97,7 +93,6 @@ module.exports = {
       };
       await writeFile(globalConfig.deviceConfig, JSON.stringify(deviceConfig));
     }
-
     return deviceConfig;
   }
   ,
