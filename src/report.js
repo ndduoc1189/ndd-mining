@@ -22,7 +22,7 @@ function connectWS() {
         });
         // Xử lý khi kết nối được thiết lập
         ws.addEventListener('open', () => {
-            console.log('Worker connected to WebSocket server');
+            console.log('Đã kết nối đến máy chủ');
             // Gửi yêu cầu đăng ký vào một nhóm cụ thể (ví dụ: 'task-group')
             const data = {
                 userId: userConfig.userId,
@@ -34,7 +34,7 @@ function connectWS() {
                 cpuCores: deviceConfig.cpuCores,
                 root: deviceConfig.root,
             }
-            console.log(data);
+            //console.log(data);
             ws.send(JSON.stringify({ command: 'CLIENT_REGISTER', data }));
         });
 
@@ -66,12 +66,12 @@ function connectWS() {
 
         // Xử lý khi kết nối đóng
         ws.addEventListener('close', () => {
-            console.log('Worker disconnected from WebSocket server');
+            console.log('Mất kết nối máy chủ, Kết nối lại sau 5s.');
             // Thử kết nối lại sau một khoảng thời gian
             setTimeout(connectWS, 5000);
         });
     } catch (ex) { 
-        console.log(ex); 
+        console.log(`Lỗi kết nối rồi, kết nối lại sau 5s`,ex); 
         // Thử kết nối lại sau một khoảng thời gian
         setTimeout(connectWS, 5000);
     }
@@ -86,16 +86,15 @@ async function sendReport() {
         const data = {
             deviceId: deviceConfig.deviceId,
             userId: userConfig.userId,
-            localIp: commonFunctions.getDeviceIP(),
             cpuUse: await commonFunctions.getCpuUse(),
         }
         ws.send(JSON.stringify({ command: 'CLIENT_REPORT', data: data }));
-        console.log(`Da gui thong tin: ${data.localIp} | cpu(%): ${data.cpuUse}`);
+        console.log(`Da gui thong tin: cpu(%): ${data.cpuUse}`);
 
     } catch (error) {
         console.log(error)
     } finally {
-        const timeOut = getRandomInt(60000, 120000);
+        const timeOut = getRandomInt(30000, 60000);
         console.log(`Gui lai thong tin sau: ${timeOut / 1000}s!`);
         await commonFunctions.delay(timeOut)
         await sendReport();

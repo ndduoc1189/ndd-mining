@@ -162,7 +162,7 @@ module.exports = {
         return false; // Thiết bị không có quyền root
       }
     }catch(error){
-      console.log('Lỗi khi chạy lệnh adb:', error);
+      //console.log('Lỗi khi chạy lệnh adb:', error);
       return false;
     }
   },
