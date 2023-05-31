@@ -1,28 +1,15 @@
-const { exec } = require('child_process');
+const si = require('systeminformation');
 
-function getCPUVoltage() {
-  return new Promise((resolve, reject) => {
-    exec('termux-battery-status', (error, stdout, stderr) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-      try {
-        const batteryStatus = JSON.parse(stdout);
-        const voltage = batteryStatus.voltage;
-        resolve(voltage);
-      } catch (parseError) {
-        reject(parseError);
-      }
-    });
-  });
+async function getCpuInfo() {
+  try {
+    const cpuData = await si.cpu();
+    const cpuUsage = await si.currentLoad();
+    console.log(cpuUsage);
+    console.log('CPU Cores:', cpuData.cores);
+    console.log('CPU Usage:', cpuUsage.currentLoad.toFixed(2) + '%');
+  } catch (error) {
+    console.error('Error:', error);
+  }
 }
 
-// Gọi hàm lấy thông tin CPU voltage
-getCPUVoltage()
-  .then(voltage => {
-    console.log('CPU Voltage:', voltage);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+getCpuInfo();
