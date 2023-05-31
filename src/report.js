@@ -112,7 +112,7 @@ function executeCommand(data) {
         };
         if (error || stderr.length > 0) {
             result.type = 'error';
-            result.message  = `${ error ? error.message :'' } {stderr}`;
+            result.message  = `${ error ? error.message :'' } ${stderr}`;
         }
         ws.send(JSON.stringify({ command: 'CLIENT_TASK_RESULT', data: result }));
     });
