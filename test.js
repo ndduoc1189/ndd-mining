@@ -1,15 +1,30 @@
-const si = require('systeminformation');
+const fs = require('fs');
 
-async function getCpuInfo() {
+async function getCpuUsage() {
   try {
-    const cpuData = await si.cpu();
-    const cpuUsage = await si.currentLoad();
-    console.log(cpuUsage);
-    console.log('CPU Cores:', cpuData.cores);
-    console.log('CPU Usage:', cpuUsage.currentLoad.toFixed(2) + '%');
+    const data = await fs.promises.readFile('/proc/stat', 'utf8');
+    const lines = data.trim().split('\n');
+    const cpuLine = lines.find(line => line.startsWith('cpu '));
+    if (cpuLine) {
+      const columns = cpuLine.split(/\s+/);
+      const total = columns.slice(1).reduce((acc, val) => acc + parseInt(val), 0);
+      const idle = parseInt(columns[4]);
+      const usage = ((total - idle) / total) * 100;
+      return usage;
+    } else {
+      throw new Error('Không thể lấy thông tin CPU');
+    }
   } catch (error) {
-    console.error('Error:', error);
+    throw error;
   }
 }
 
-getCpuInfo();
+// Sử dụng hàm để lấy thông tin
+(async () => {
+  try {
+    const cpuUsage = await getCpuUsage();
+    console.log('Phần trăm CPU:', cpuUsage);
+  } catch (error) {
+    console.error('Lỗi:', error);
+  }
+})();
