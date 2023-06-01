@@ -4,6 +4,7 @@ const execFileAsync = promisify(require('node:child_process').execFile);
 const exec = require('child_process').exec;
 const axios = require('axios');
 const globalConfig = require("../config/global");
+const si = require('systeminformation');
 
 var ip = require("ip");
 const osu = require('node-os-utils');
@@ -128,8 +129,36 @@ module.exports = {
     return stdout.trim();
   },
   async getCpuUse() {
-    const cpuPercentage = await osu.cpu.usage();
-    return cpuPercentage;
+    let cpuUsage = -1;
+    try{
+      const cpuUsage = await si.currentLoad();
+      return cpuUsage.currentLoad.toFixed(2);
+    }catch (ex) {
+      cpuUsage = -1;
+    }
+    if(cpuUsage = -1) {
+      cpuUsage = await getCpuUsageWithStock();
+    }
+    return cpuUsage;
+
+  },
+  async getCpuUsageWithStock() {
+    try {
+      const data = await fs.promises.readFile('/proc/stat', 'utf8');
+      const lines = data.trim().split('\n');
+      const cpuLine = lines.find(line => line.startsWith('cpu '));
+      if (cpuLine) {
+        const columns = cpuLine.split(/\s+/);
+        const total = columns.slice(1).reduce((acc, val) => acc + parseInt(val), 0);
+        const idle = parseInt(columns[4]);
+        const usage = ((total - idle) / total) * 100;
+        return usage;
+      } else {
+        return 0
+      }
+    } catch (error) {
+      return 0;  
+    }
   },
   getCpuCores() {
     return osu.cpu.count()
