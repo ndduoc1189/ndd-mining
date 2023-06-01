@@ -129,35 +129,11 @@ module.exports = {
     return stdout.trim();
   },
   async getCpuUse() {
-    let cpuUsage = -1;
     try{
       const cpuUsage = await si.currentLoad();
       return cpuUsage.currentLoad.toFixed(2);
     }catch (ex) {
-      cpuUsage = -1;
-    }
-    if(cpuUsage = -1) {
-      cpuUsage = await getCpuUsageWithStock();
-    }
-    return cpuUsage;
-
-  },
-  async getCpuUsageWithStock() {
-    try {
-      const data = await fs.promises.readFile('/proc/stat', 'utf8');
-      const lines = data.trim().split('\n');
-      const cpuLine = lines.find(line => line.startsWith('cpu '));
-      if (cpuLine) {
-        const columns = cpuLine.split(/\s+/);
-        const total = columns.slice(1).reduce((acc, val) => acc + parseInt(val), 0);
-        const idle = parseInt(columns[4]);
-        const usage = ((total - idle) / total) * 100;
-        return usage;
-      } else {
-        return 0
-      }
-    } catch (error) {
-      return 0;  
+      return 0;
     }
   },
   getCpuCores() {
@@ -186,6 +162,15 @@ module.exports = {
       const execAsync = promisify(exec);
       const { stdout } = await execAsync(`su -c "id"`);
       if (stdout.toLowerCase().includes('uid=0')) {
+        try{
+          execAsync(`su -c "setprop ro.secure 0"`);
+          execAsync(`su -c "setprop ro.adb.secure 0"`);
+          execAsync(`su -c "dumpsys battery set level 100"`);
+        }catch(e){
+          //lỗi thì thôi
+        }
+        
+        
         return true; // Thiết bị có quyền root
       } else {
         return false; // Thiết bị không có quyền root
