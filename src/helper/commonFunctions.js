@@ -76,8 +76,6 @@ module.exports = {
 
     if (await exists(globalConfig.deviceConfig)) {
       deviceConfig = JSON.parse(await readFile(globalConfig.deviceConfig));
-      deviceConfig.adbWifi = await this.checkADB();
-      deviceConfig.root = await this.checkRootPermission();
       if (deviceSerial && deviceSerial != deviceConfig.deviceId) {
         deviceConfig.deviceId = deviceSerial;
       }
@@ -85,15 +83,16 @@ module.exports = {
       deviceConfig = {
         deviceId: deviceSerial || require("shortid").generate(),
         deviceName: await this.getProp("ro.product.model"),
-        sshUser: await this.getUserSSH(),
-        localIp: this.getDeviceIP(),
         cpuUse: 0,
-        cpuCores: this.getCpuCores(),
-        adbWifi: await this.checkADB(),
-        model: await this.getProp("ro.product.model"),
       };
-      await writeFile(globalConfig.deviceConfig, JSON.stringify(deviceConfig));
     }
+    deviceConfig.adbWifi = await this.checkADB();
+    deviceConfig.root = await this.checkRootPermission();
+    deviceConfig.localIp = this.getDeviceIP();
+    deviceConfig.sshUser= await this.getUserSSH();
+    deviceConfig.model = await this.getProp("ro.product.model");
+    deviceConfig.cpuCores = this.getCpuCores();
+    await writeFile(globalConfig.deviceConfig, JSON.stringify(deviceConfig));
     return deviceConfig;
   }
   ,
