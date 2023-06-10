@@ -136,7 +136,12 @@ module.exports = {
     }
   },
   getCpuCores() {
-    return osu.cpu.count()
+    try{
+      return osu.cpu.count()
+    }catch (ex) {
+      return 0;
+    }
+    
   },
   async checkADB() {
     try {
