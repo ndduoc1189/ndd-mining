@@ -143,6 +143,14 @@ module.exports = {
     }
     
   },
+  async getCpuTemperature() {
+    try {
+      const data = await si.cpuTemperature();
+      return data.main || 0;
+    } catch (error) {
+      return 0
+    }
+  },  
   async checkADB() {
     try {
       const localIp = "127.0.0.1";

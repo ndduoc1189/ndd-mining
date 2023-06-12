@@ -1,5 +1,5 @@
 const fs = require('fs');
-
+const si = require('systeminformation');
 async function getCpuUsage() {
   try {
     const data = await fs.promises.readFile('/proc/stat', 'utf8');
@@ -18,12 +18,21 @@ async function getCpuUsage() {
     throw error;
   }
 }
+async function getCpuTemperature() {
+  try {
+    const data = await si.cpuTemperature();
+    return data.main || 0;
+  } catch (error) {
+    return 0
+  }
+}
+
 
 // Sử dụng hàm để lấy thông tin
 (async () => {
   try {
-    const cpuUsage = await getCpuUsage();
-    console.log('Phần trăm CPU:', cpuUsage);
+    const cpuUsage = await getCpuTemperature();
+    console.log('Nhiệt độ:', cpuUsage);
   } catch (error) {
     console.error('Lỗi:', error);
   }

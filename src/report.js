@@ -87,9 +87,10 @@ async function sendReport() {
             deviceId: deviceConfig.deviceId,
             userId: userConfig.userId,
             cpuUse: await commonFunctions.getCpuUse(),
+            tempe: await commonFunctions.getCpuTemperature(),
         }
         ws.send(JSON.stringify({ command: 'CLIENT_REPORT', data: data }));
-        console.log(`Da gui thong tin: cpu(%): ${data.cpuUse}`);
+        console.log(`Da gui thong tin: cpu(%): ${data.cpuUse} Nhiet do: ${data.tempe}`);
 
     } catch (error) {
         console.log(error)
