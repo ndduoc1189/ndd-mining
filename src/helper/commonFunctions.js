@@ -137,7 +137,9 @@ module.exports = {
   },
   getCpuCores() {
     try{
-      return osu.cpu.count()
+      const cpuCount = osu.cpu.count()
+      return isNaN(cpuCount) ? 0 : Math.round(cpuCount)
+
     }catch (ex) {
       return 0;
     }
