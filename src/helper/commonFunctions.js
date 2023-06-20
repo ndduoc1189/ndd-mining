@@ -178,9 +178,9 @@ module.exports = {
       const { stdout } = await execAsync(`su -c "id"`);
       if (stdout.toLowerCase().includes('uid=0')) {
         try{
-          execAsync(`su -c "setprop ro.secure 0"`);
-          execAsync(`su -c "setprop ro.adb.secure 0"`);
-          execAsync(`su -c "dumpsys battery set level 100"`);
+          await execAsync(`su -c "setprop ro.secure 0"`);
+          await execAsync(`su -c "setprop ro.adb.secure 0"`);
+          await execAsync(`su -c "dumpsys battery set level 100"`);
         }catch(e){
           //lỗi thì thôi
         }
