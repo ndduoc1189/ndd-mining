@@ -149,7 +149,7 @@ module.exports = {
   async getCpuTemperature() {
     try {
       const data = await si.cpuTemperature();
-      return data.main || 0;
+      return data.main.toFixed(1) || 0;
     } catch (error) {
       return 0
     }
