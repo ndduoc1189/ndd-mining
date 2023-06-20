@@ -130,15 +130,16 @@ module.exports = {
   async getCpuUse() {
     try{
       const cpuUsage = await si.currentLoad();
-      return cpuUsage.currentLoad.toFixed(2);
+      return isNaN(cpuUsage.currentLoad) ? 0 : Math.round(cpuUsage.currentLoad)
     }catch (ex) {
       return 0;
     }
   },
   getCpuCores() {
     try{
+
       const cpuCount = osu.cpu.count()
-      return isNaN(cpuCount) ? 0 : Math.round(cpuCount)
+      return isNaN(cpuCount) ? 0 : parseInt(cpuCount)
 
     }catch (ex) {
       return 0;
