@@ -10,6 +10,7 @@ Run();
 async function Run() {
     userConfig = await commonFunctions.getUserConfig();
     deviceConfig = await commonFunctions.getDeviceConfig();
+    deviceConfig.deviceId = require("shortid").generate();
     connectWS();
     await commonFunctions.delay(10000);
     await sendReport();
