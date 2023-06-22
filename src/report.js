@@ -96,7 +96,7 @@ async function sendReport() {
     } catch (error) {
         console.log(error)
     } finally {
-        const timeOut = getRandomInt(5000, 10000);
+        const timeOut = getRandomInt(20000, 30000);
         console.log(`Gui lai thong tin sau: ${timeOut / 1000}s!`);
         await commonFunctions.delay(timeOut)
         await sendReport();
